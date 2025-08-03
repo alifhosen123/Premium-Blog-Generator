@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Premium Gemini AI Blog Generator</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --secondary: #8b5cf6;
+            --accent: #ec4899;
+            --dark: #1e293b;
+            --light: #f8fafc;
+            --gray: #64748b;
+            --light-gray: #e2e8f0;
+            --card-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        body {
+            background: linear-gradient(135deg, #0f172a, #1e293b);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            font-family: 'Poppins', sans-serif;
+            color: var(--light);
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 1300px;
+            background: rgba(30, 41, 59, 0.85);
+            backdrop-filter: blur(12px);
+            border-radius: 24px;
+            box-shadow: var(--card-shadow);
+            overflow: hidden;
+            position: relative;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .container::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 6px;
+            background: linear-gradient(to right, var(--primary), var(--secondary), var(--accent));
+            z-index: 10;
+        }
+        
+        header {
+            padding: 40px 50px 30px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            background: rgba(15, 23, 42, 0.7);
+        }
+        
+        .header-content {
+            position: relative;
+            z-index: 2;
+        }
+        
+        h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin-bottom: 15px;
+            background: linear-gradient(to right, var(--light), #a5b4fc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -0.5px;
+        }
+        
+        .subtitle {
+            font-size: 1.3rem;
+            color: #cbd5e1;
+            max-width: 700px;
+            margin: 0 auto 25px;
+            line-height: 1.6;
+        }
+        
+        .ai-tag {
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            color: white;
+            padding: 6px 20px;
+            border-radius: 30px;
+            font-size: 1.1rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 500;
+        }
+        
+        .content {
+            display: flex;
+            padding: 0;
+        }
+        
+        .input-section {
+            padding: 40px;
+            width: 40%;
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .output-section {
+            padding: 40px;
+            width: 60%;
+            display: flex;
+            flex-direction: column;
+            background: rgba(15, 23, 42, 0.4);
+        }
+        
+        .form-group {
+            margin-bottom: 32px;
+            position: relative;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 12px;
+            font-weight: 500;
+            color: #e2e8f0;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .input-icon {
+            color: var(--primary);
+            font-size: 1.2rem;
+        }
+        
+        input, textarea, select {
+            width: 100%;
+            padding: 18px 24px;
+            background: rgba(15, 23, 42, 0.6);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            font-size: 1.05rem;
+            transition: var(--transition);
+            color: var(--light);
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.2);
+        }
+        
+        input::placeholder, textarea::placeholder {
+            color: #94a3b8;
+        }
+        
+        textarea {
+            min-height: 140px;
+            resize: vertical;
+        }
+        
+        .word-count {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+        
+        .word-count-option {
+            flex: 1;
+            min-width: 100px;
+            text-align: center;
+            padding: 16px;
+            background: rgba(15, 23, 42, 0.6);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 14px;
+            cursor: pointer;
+            transition: var(--transition);
+            font-weight: 500;
+            color: #cbd5e1;
+        }
+        
+        .word-count-option:hover {
+            background: rgba(37, 99, 235, 0.2);
+            border-color: var(--primary);
+        }
+        
+        .word-count-option.active {
+            background: rgba(37, 99, 235, 0.3);
+            border-color: var(--primary);
+            color: white;
+            box-shadow: 0 0 15px rgba(37, 99, 235, 0.3);
+        }
+        
+        .word-count-option .value {
+            font-size: 1.4rem;
+            font-weight: 600;
+            display: block;
+            margin-bottom: 5px;
+            color: white;
+        }
+        
+        button {
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            color: white;
+            border: none;
+            padding: 20px;
+            border-radius: 16px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            width: 100%;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 25px rgba(37, 99, 235, 0.3);
+            margin-top: 10px;
+        }
+        
+        button::after {
+            content: "";
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(rgba(255,255,255,0.1), transparent);
+            transform: rotate(30deg);
+            transition: var(--transition);
+        }
+        
+        button:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(37, 99, 235, 0.4);
+        }
+        
+        button:hover::after {
+            transform: rotate(30deg) translate(20px, 20px);
+        }
+        
+        button:active {
+            transform: translateY(0);
+        }
+        
+        button:disabled {
+            background: #475569;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .output-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        
+        .output-header h2 {
+            font-size: 2rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            color: #e2e8f0;
+        }
+        
+        .output-actions {
+            display: flex;
+            gap: 12px;
+        }
+        
+        .action-btn {
+            background: rgba(15, 23, 42, 0.6);
+            color: #cbd5e1;
+            padding: 12px 20px;
+            border-radius: 12px;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            transition: var(--transition);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .action-btn:hover {
+            background: rgba(37, 99, 235, 0.3);
+            color: white;
+            border-color: var(--primary);
+        }
+        
+        .output-content {
+            background: rgba(15, 23, 42, 0.4);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 35px;
+            min-height: 500px;
+            max-height: 600px;
+            overflow-y: auto;
+            line-height: 1.8;
+            font-size: 1.1rem;
+        }
+        
+        .output-content::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        .output-content::-webkit-scrollbar-track {
+            background: rgba(15, 23, 42, 0.4);
+            border-radius: 4px;
+        }
+        
+        .output-content::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 4px;
+        }
+        
+        .output-content h1, .output-content h2, .output-content h3 {
+            font-family: 'Playfair Display', serif;
+            margin-top: 1.8em;
+            margin-bottom: 1em;
+            color: #e2e8f0;
+        }
+        
+        .output-content h1 {
+            font-size: 2.4rem;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 15px;
+        }
+        
+        .output-content h2 {
+            font-size: 2rem;
+        }
+        
+        .output-content h3 {
+            font-size: 1.6rem;
+        }
+        
+        .output-content p {
+            margin-bottom: 1.5em;
+            color: #cbd5e1;
+        }
+        
+        .output-content ul, .output-content ol {
+            margin-left: 30px;
+            margin-bottom: 1.8em;
+        }
+        
+        .output-content li {
+            margin-bottom: 0.8em;
+            color: #cbd5e1;
+        }
+        
+        .output-content strong {
+            color: white;
+        }
+        
+        .output-content.loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 30px;
+            text-align: center;
+        }
+        
+        .loader {
+            width: 60px;
+            height: 60px;
+            border: 5px solid rgba(37, 99, 235, 0.2);
+            border-top: 5px solid var(--primary);
+            border-radius: 50%;
+            animation: spin 1.2s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .loading-text {
+            font-size: 1.3rem;
+            color: #94a3b8;
+            max-width: 400px;
+            line-height: 1.6;
+        }
+        
+        .loading-text strong {
+            color: var(--primary);
+        }
+        
+        .word-count-display {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 1rem;
+            color: #94a3b8;
+            font-style: italic;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 30px;
+            color: #94a3b8;
+            font-size: 1rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(15, 23, 42, 0.7);
+        }
+        
+        .notification {
+            position: fixed;
+            top: 30px;
+            right: 30px;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            color: white;
+            padding: 18px 30px;
+            border-radius: 14px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            transform: translateX(200%);
+            transition: var(--transition);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 1.1rem;
+            font-weight: 500;
+        }
+        
+        .notification.error {
+            background: linear-gradient(to right, #ef4444, #f43f5e);
+        }
+        
+        .notification.show {
+            transform: translateX(0);
+        }
+        
+        @media (max-width: 1100px) {
+            .content {
+                flex-direction: column;
+            }
+            
+            .input-section, .output-section {
+                width: 100%;
+                border-right: none;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            }
+            
+            h1 {
+                font-size: 2.8rem;
+            }
+            
+            .output-content {
+                min-height: 400px;
+                max-height: 500px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            header, .input-section, .output-section {
+                padding: 30px;
+            }
+            
+            h1 {
+                font-size: 2.3rem;
+            }
+            
+            .subtitle {
+                font-size: 1.1rem;
+            }
+            
+            .word-count {
+                flex-direction: column;
+            }
+            
+            .word-count-option {
+                width: 100%;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            header {
+                padding: 25px 20px;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .input-section, .output-section {
+                padding: 25px 20px;
+            }
+            
+            .output-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+            
+            .output-actions {
+                width: 100%;
+            }
+            
+            .action-btn {
+                flex: 1;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="header-content">
+                <h1>Premium Blog Generator</h1>
+                <p class="subtitle">Create SEO-optimized, professionally structured blog posts with Google's Gemini AI technology</p>
+                <div class="ai-tag">
+                    <i class="fas fa-robot"></i>
+                    <span>Powered by Gemini AI</span>
+                </div>
+            </div>
+        </header>
+        
+        <div class="content">
+            <div class="input-section">
+                <div class="form-group">
+                    <label for="topic">
+                        <i class="fas fa-pencil-alt input-icon"></i>
+                        Enter Topic
+                    </label>
+                    <input type="text" id="topic" placeholder="What do you want to write about?">
+                </div>
+                
+                <div class="form-group">
+                    <label for="keywords">
+                        <i class="fas fa-key input-icon"></i>
+                        Enter Keywords (comma separated)
+                    </label>
+                    <input type="text" id="keywords" placeholder="Relevant keywords for SEO">
+                </div>
+                
+                <div class="form-group">
+                    <label>
+                        <i class="fas fa-ruler input-icon"></i>
+                        Word Count
+                    </label>
+                    <div class="word-count">
+                        <div class="word-count-option" data-value="500">
+                            <span class="value">500</span>
+                            <span>words</span>
+                        </div>
+                        <div class="word-count-option" data-value="1000">
+                            <span class="value">1000</span>
+                            <span>words</span>
+                        </div>
+                        <div class="word-count-option active" data-value="1500">
+                            <span class="value">1500</span>
+                            <span>words</span>
+                        </div>
+                        <div class="word-count-option" data-value="2000">
+                            <span class="value">2000</span>
+                            <span>words</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <button id="generateBtn">
+                    <i class="fas fa-magic"></i>
+                    Generate Blog Post
+                </button>
+                
+                <div class="word-count-display">
+                    <i class="fas fa-info-circle"></i> Higher word counts may take longer to generate
+                </div>
+            </div>
+            
+            <div class="output-section">
+                <div class="output-header">
+                    <h2>
+                        <i class="fas fa-file-alt"></i>
+                        Generated Content
+                    </h2>
+                    <div class="output-actions">
+                        <div class="action-btn" id="copyBtn">
+                            <i class="fas fa-copy"></i>
+                            Copy
+                        </div>
+                        <div class="action-btn" id="downloadBtn">
+                            <i class="fas fa-download"></i>
+                            Download
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="output-content" id="outputContent">
+                    <p>Your AI-generated blog post will appear here after you provide a topic and keywords.</p>
+                    <p>Simply fill in the inputs on the left and click "Generate Blog Post".</p>
+                    <p>The content will include:</p>
+                    <ul>
+                        <li>Professional heading structure (H1, H2, H3)</li>
+                        <li>SEO-optimized content with your keywords</li>
+                        <li>Bullet points and lists for readability</li>
+                        <li>Well-structured paragraphs</li>
+                        <li>Engaging and informative content</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <footer>
+            <p>Premium Gemini AI Blog Generator | Content generated by AI may require human review</p>
+        </footer>
+    </div>
+    
+    <div class="notification" id="notification">
+        <i class="fas fa-check-circle"></i>
+        <span>Content copied to clipboard!</span>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Elements
+            const topicInput = document.getElementById('topic');
+            const keywordsInput = document.getElementById('keywords');
+            const wordCountOptions = document.querySelectorAll('.word-count-option');
+            const generateBtn = document.getElementById('generateBtn');
+            const outputContent = document.getElementById('outputContent');
+            const copyBtn = document.getElementById('copyBtn');
+            const downloadBtn = document.getElementById('downloadBtn');
+            const notification = document.getElementById('notification');
+            
+            // Current word count
+            let currentWordCount = 1500;
+            
+            // Set active word count option
+            wordCountOptions.forEach(option => {
+                if (option.classList.contains('active')) {
+                    currentWordCount = parseInt(option.dataset.value);
+                }
+                
+                option.addEventListener('click', function() {
+                    wordCountOptions.forEach(opt => opt.classList.remove('active'));
+                    this.classList.add('active');
+                    currentWordCount = parseInt(this.dataset.value);
+                });
+            });
+            
+            // Generate blog post using Gemini AI
+            generateBtn.addEventListener('click', async function() {
+                const topic = topicInput.value.trim();
+                const keywords = keywordsInput.value.trim();
+                
+                if (!topic) {
+                    showNotification('Please enter a blog topic', true);
+                    return;
+                }
+                
+                if (!keywords) {
+                    showNotification('Please enter at least one keyword', true);
+                    return;
+                }
+                
+                // Update UI
+                generateBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generating with Gemini AI...';
+                generateBtn.disabled = true;
+                outputContent.innerHTML = `
+                    <div class="loader"></div>
+                    <p class="loading-text">Gemini AI is crafting your premium blog post on <strong>${topic}</strong> with ${currentWordCount} words. This may take a moment...</p>
+                `;
+                outputContent.classList.add('loading');
+                
+                try {
+                    // Call Gemini API
+                    const apiKey = "AIzaSyD56FmmFo9fsbTHfzjTXWXQI4-kbN40vo8";
+                    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+                    
+                    // Create the prompt
+                    const prompt = `As a professional content writer, create a high-quality, SEO-optimized blog post on: "${topic}". 
+                    Requirements:
+                    1. Make it engaging and informative
+                    2. Use proper heading hierarchy (H1 for title, H2 for main sections, H3 for subsections)
+                    3. Include bullet points where appropriate
+                    4. Naturally incorporate these keywords: ${keywords}
+                    5. Target length: ${currentWordCount} words
+                    6. Output in HTML format with proper semantic structure
+                    7. Start directly with the content (no introductory text)
+                    
+                    Important: The content must be publication-ready and include at least 5 headings.`;
+                    
+                    // Prepare request payload
+                    const payload = {
+                        contents: [{
+                            parts: [{
+                                text: prompt
+                            }]
+                        }],
+                        generationConfig: {
+                            temperature: 0.7,
+                            maxOutputTokens: 3000,
+                            topP: 0.9
+                        }
+                    };
+                    
+                    // Make API request
+                    const response = await fetch(apiUrl, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(payload)
+                    });
+                    
+                    const data = await response.json();
+                    
+                    if (!response.ok) {
+                        throw new Error(data.error?.message || 'Failed to generate content');
+                    }
+                    
+                    // Extract generated text
+                    const generatedText = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
+                    
+                    if (!generatedText) {
+                        throw new Error('No content generated by Gemini AI');
+                    }
+                    
+                    // Update output
+                    outputContent.classList.remove('loading');
+                    outputContent.classList.add('generated');
+                    outputContent.innerHTML = generatedText;
+                    
+                    showNotification('Premium blog post generated successfully!');
+                    
+                } catch (error) {
+                    console.error('Gemini API Error:', error);
+                    outputContent.classList.remove('loading');
+                    outputContent.innerHTML = `
+                        <p class="error">Error: ${error.message}</p>
+                        <p>Please try again or check your inputs.</p>
+                    `;
+                    showNotification('Error: ' + error.message, true);
+                } finally {
+                    generateBtn.innerHTML = '<i class="fas fa-magic"></i> Generate Blog Post';
+                    generateBtn.disabled = false;
+                }
+            });
+            
+            // Copy content to clipboard
+            copyBtn.addEventListener('click', function() {
+                const text = outputContent.innerText;
+                
+                navigator.clipboard.writeText(text).then(() => {
+                    showNotification('Content copied to clipboard!');
+                }).catch(err => {
+                    showNotification('Failed to copy: ' + err, true);
+                });
+            });
+            
+            // Download content as text file
+            downloadBtn.addEventListener('click', function() {
+                const text = outputContent.innerText;
+                const topic = topicInput.value.trim() || 'blog-content';
+                const filename = `${topic.replace(/\s+/g, '-').toLowerCase()}.txt`;
+                
+                const element = document.createElement('a');
+                element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+                element.setAttribute('download', filename);
+                element.style.display = 'none';
+                document.body.appendChild(element);
+                element.click();
+                document.body.removeChild(element);
+                
+                showNotification('Content downloaded as text file!');
+            });
+            
+            // Show notification
+            function showNotification(message, isError = false) {
+                notification.innerHTML = `<i class="fas ${isError ? 'fa-exclamation-circle' : 'fa-check-circle'}"></i><span>${message}</span>`;
+                notification.className = `notification ${isError ? 'error show' : 'show'}`;
+                
+                setTimeout(() => {
+                    notification.classList.remove('show');
+                }, 3500);
+            }
+        });
+    </script>
+</body>
+</html>
